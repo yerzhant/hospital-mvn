@@ -1,0 +1,84 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+
+/*Fields*/
+
+.date {
+    width: 8%;
+    text-align: center;
+}
+
+.number {
+    width: 7%;
+    text-align: center;
+}
+
+/*Misc*/
+
+.filter {
+    margin-left: 200px !important;
+    margin-right: 20px !important;
+}
+
+.bottom {
+    text-align: center;
+    font-size: smaller;
+}
+
+.rounded-icon-button {
+    margin-top: -3px !important;
+    width: 30px !important;
+    height: 30px;
+    border-radius: 15px; 
+}
+
+/*UI*/
+
+.ui-datatable-footer {
+    text-align: left !important;
+}
+
+.ui-panel {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.ui-panelgrid-cell {
+    border-style: hidden !important;
+}
+
+.ui-panel-title {
+    margin: 0 !important;
+}
+
+.ui-panel-titlebar {
+    padding: 5px 10px !important;
+}
+
+.ui-panel-titlebar-icon {
+    margin-top: 0.1em !important;
+}
+
+.ui-inputtextarea {
+    width: 30em;
+}
+
+.ui-helper-reset {
+    line-height: 1 !important;
+}
+
+.ui-dialog-content button {
+    width: 170px;
+}
+
+.ui-dialog-footer button {
+    width: 100px;
+}
+
+.ui-dialog-content tfoot td, .ui-dialog-footer, .ui-dialog-content .none {
+    padding: 5px;
+    text-align: center !important;
+}

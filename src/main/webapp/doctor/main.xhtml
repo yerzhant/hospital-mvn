@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../WEB-INF/templates/main.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title">Главная</ui:define>
+
+    <ui:define name="body">
+
+        <p:panel>
+            <f:facet name="header">
+                <h:form>
+                    <p:outputLabel value="Пациенты" />
+                    <p:inputText id="filter" value="#{patients.filter}" class="filter" />
+                    <p:commandButton value="Найти" actionListener="#{patients.filter()}" icon="ui-icon-search"
+                                     update="patients:tableForm:table checkouts:tableForm:table" />
+                </h:form>
+            </f:facet>
+            <ez:table id="patients" dialogHeader="Пациент" deleteMessage="Удалить пациента и все его выписки?"
+                      updates="checkouts:tableForm:table"
+                      items="#{patients.items}" selected="#{patients.selected}"
+                      create="#{patients.create()}" save="#{patients.save()}" delete="#{patients.delete()}" cancel="#{patients.cancel()}" refresh="#{patients.filter()}">
+
+                <p:column headerText="№ документа" class="number">
+                    #{item.docNumber}
+                </p:column>
+
+                <p:column headerText="Фамилия">
+                    #{item.lastName}
+                </p:column>
+
+                <p:column headerText="Имя">
+                    #{item.firstName}
+                </p:column>
+
+                <p:column headerText="Отчество">
+                    #{item.surname}
+                </p:column>
+
+                <p:column headerText="Дата рождения" class="date">
+                    <h:outputText value="#{item.birthDate}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Домашний адрес">
+                    #{item.homeAddress}
+                </p:column>
+
+                <p:column headerText="Место работы">
+                    #{item.workPlace}
+                </p:column>
+
+                <p:column headerText="Род занятий">
+                    #{item.occupation}
+                </p:column>
+
+                <f:facet name="dialog">
+                    <p:panelGrid columns="3">
+                        <p:outputLabel for="docNumber" value="№ документа" />
+                        <p:inputText id="docNumber" value="#{patients.selected.docNumber}" />
+                        <p:message for="docNumber" />
+
+                        <p:outputLabel for="lastName" value="Фамилия" />
+                        <p:inputText id="lastName" value="#{patients.selected.lastName}" />
+                        <p:message for="lastName" />
+
+                        <p:outputLabel for="firstName" value="Имя" />
+                        <p:inputText id="firstName" value="#{patients.selected.firstName}" />
+                        <p:message for="firstName" />
+
+                        <p:outputLabel for="surname" value="Отчество" />
+                        <p:inputText id="surname" value="#{patients.selected.surname}" />
+                        <p:message for="surname" />
+
+                        <p:outputLabel for="birthDate" value="Дата рождения" />
+                        <p:calendar id="birthDate" value="#{patients.selected.birthDate}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="birthDate" />
+
+                        <p:outputLabel for="homeAddress" value="Домашний адрес" />
+                        <p:inputText id="homeAddress" value="#{patients.selected.homeAddress}" />
+                        <p:message for="homeAddress" />
+
+                        <p:outputLabel for="workPlace" value="Место работы" />
+                        <p:inputText id="workPlace" value="#{patients.selected.workPlace}" />
+                        <p:message for="workPlace" />
+
+                        <p:outputLabel for="occupation" value="Род занятий" />
+                        <p:inputText id="occupation" value="#{patients.selected.occupation}" />
+                        <p:message for="occupation" />
+                    </p:panelGrid>
+                </f:facet>
+
+            </ez:table>
+        </p:panel>
+
+        <p:panel header="Выписки">
+            <ez:table id="checkouts" dialogHeader="Выписка" disableButtons="#{empty patients.selected}"
+                      items="#{checkouts.items}" selected="#{checkouts.selected}" updates="@form"
+                      create="#{checkouts.create()}" save="#{checkouts.save()}" delete="#{checkouts.delete()}" cancel="#{checkouts.cancel()}" refresh="#{checkouts.refresh()}">
+
+                <p:column headerText="Наименование организации">
+                    #{item.organizationName}
+                </p:column>
+
+                <p:column headerText="Адрес организации">
+                    #{item.organizationAddress}
+                </p:column>
+
+                <p:column headerText="Дата заболевания" class="date">
+                    <h:outputText value="#{item.outClinicDiseaseDate}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Дата направления в стационар" class="date">
+                    <h:outputText value="#{item.toHospitalDirectedDate}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Дата поступления в стационар" class="date">
+                    <h:outputText value="#{item.hospitalEntranceDate}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Дата выбытия из стационара" class="date">
+                    <h:outputText value="#{item.hospitalRetirementDate}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Дата выписки" class="date">
+                    <h:outputText value="#{item.checkedoutOn}">
+                        <f:convertDateTime locale="ru"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Полный диагноз">
+                    #{item.fullDiagnosis}
+                </p:column>
+
+                <p:column headerText="Краткий анамнез">
+                    #{item.briefHistory}
+                </p:column>
+
+                <p:column headerText="Рекомендации">
+                    #{item.recommendations}
+                </p:column>
+
+                <f:facet name="footer">
+                    <h:form>
+                        <p:commandButton value="Распечатать" icon="ui-icon-print" actionListener="#{checkouts.print()}" disabled="#{empty checkouts.selected}" ajax="false" />
+                    </h:form>
+                </f:facet>
+
+                <f:facet name="dialog">
+                    <p:panelGrid columns="3" rendered="#{not empty checkouts.selected}">
+                        <p:outputLabel for="organizationName" value="Наименование организации" />
+                        <p:inputText id="organizationName" value="#{checkouts.selected.organizationName}" />
+                        <p:message for="organizationName" />
+
+                        <p:outputLabel for="organizationAddress" value="Адрес организации" />
+                        <p:inputText id="organizationAddress" value="#{checkouts.selected.organizationAddress}" />
+                        <p:message for="organizationAddress" />
+
+                        <p:outputLabel for="outClinicDiseaseDate" value="Дата заболевания" />
+                        <p:calendar id="outClinicDiseaseDate" value="#{checkouts.selected.outClinicDiseaseDate}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="outClinicDiseaseDate" />
+
+                        <p:outputLabel for="toHospitalDirectedDate" value="Дата направления в стационар" />
+                        <p:calendar id="toHospitalDirectedDate" value="#{checkouts.selected.toHospitalDirectedDate}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="toHospitalDirectedDate" />
+
+                        <p:outputLabel for="hospitalEntranceDate" value="Дата поступления в стационар" />
+                        <p:calendar id="hospitalEntranceDate" value="#{checkouts.selected.hospitalEntranceDate}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="hospitalEntranceDate" />
+
+                        <p:outputLabel for="hospitalRetirementDate" value="Дата выбытия из стационара" />
+                        <p:calendar id="hospitalRetirementDate" value="#{checkouts.selected.hospitalRetirementDate}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="hospitalRetirementDate" />
+
+                        <p:outputLabel for="checkedoutOn" value="Дата выписки" />
+                        <p:calendar id="checkedoutOn" value="#{checkouts.selected.checkedoutOn}" mask="true" pattern="dd.MM.yyyy" />
+                        <p:message for="checkedoutOn" />
+
+                        <p:outputLabel for="fullDiagnosis" value="Полный диагноз" />
+                        <p:inputTextarea id="fullDiagnosis" value="#{checkouts.selected.fullDiagnosis}" />
+                        <p:message for="fullDiagnosis" />
+
+                        <p:outputLabel for="briefHistory" value="Краткий анамнез" />
+                        <p:inputTextarea id="briefHistory" value="#{checkouts.selected.briefHistory}" />
+                        <p:message for="briefHistory" />
+
+                        <p:outputLabel for="recommendations" value="Рекомендации" />
+                        <p:inputTextarea id="recommendations" value="#{checkouts.selected.recommendations}" />
+                        <p:message for="recommendations" />
+                    </p:panelGrid>
+                </f:facet>
+
+            </ez:table>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

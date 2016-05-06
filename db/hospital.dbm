@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.8.1" last-position="0,0" last-zoom="1"
+	 default-schema="core" default-owner="hospital">
+<role name="hospital"
+      login="true"
+      password="xxx"
+      sql-disabled="true">
+</role>
+
+<role name="hospital_web"
+      login="true"
+      sql-disabled="true">
+</role>
+
+<database name="hospital" sql-disabled="true" append-at-eod="true">
+	<appended-sql><![CDATA[grant select, insert, update, delete on all tables in schema core to hospital_web;
+grant usage on all sequences in schema core to hospital_web;
+
+insert into core.doctors(personal_number, position, last_name, first_name, surname, login, password) values (123, 'doctor', 'Петров', 'Петр', 'Петрович', 'петровп', '65438B79D15F730AAF908B1955B1AA1A8E272B54F0B38461B197E23180178D3B');]]></appended-sql>
+</database>
+
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="core" rect-visible="true" fill-color="#e1e1e1">
+</schema>
+
+<table name="doctors">
+	<schema name="core"/>
+	<role name="hospital"/>
+	<position x="463" y="288"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="personal_number" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="position" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="last_name" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="first_name" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="surname">
+		<type name="text"/>
+	</column>
+	<column name="login" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="left_login_tries" not-null="true" default-value="3">
+		<type name="smallint"/>
+	</column>
+	<constraint name="doctors_pk" type="pk-constr" table="core.doctors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="doctors_personal_number_uk" type="uq-constr" table="core.doctors">
+		<columns names="personal_number" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="doctors_login_uk" type="uq-constr" table="core.doctors">
+		<columns names="login" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="doctors_left_login_tries_ck" type="ck-constr" table="core.doctors">
+			<expression><![CDATA[left_login_tries >= 0]]></expression>
+	</constraint>
+</table>
+
+<table name="patients">
+	<schema name="core"/>
+	<role name="hospital"/>
+	<position x="911" y="285"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="doc_number" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="last_name" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="first_name" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="surname">
+		<type name="text"/>
+	</column>
+	<column name="birth_date">
+		<type name="date"/>
+	</column>
+	<column name="home_address">
+		<type name="text"/>
+	</column>
+	<column name="work_place">
+		<type name="text"/>
+	</column>
+	<column name="occupation">
+		<type name="text"/>
+	</column>
+	<constraint name="patients_pk" type="pk-constr" table="core.patients">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="patients_doc_number_uk" type="uq-constr" table="core.patients">
+		<columns names="doc_number" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="checkouts">
+	<schema name="core"/>
+	<role name="hospital"/>
+	<position x="616" y="542"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="organization_name">
+		<type name="text"/>
+	</column>
+	<column name="organization_address">
+		<type name="text"/>
+	</column>
+	<column name="out_clinic_disease_date">
+		<type name="date"/>
+	</column>
+	<column name="to_hospital_directed_date">
+		<type name="date"/>
+	</column>
+	<column name="hospital_entrance_date">
+		<type name="date"/>
+	</column>
+	<column name="hospital_retirement_date">
+		<type name="date"/>
+	</column>
+	<column name="full_diagnosis" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="brief_history">
+		<type name="text"/>
+	</column>
+	<column name="recommendations">
+		<type name="text"/>
+	</column>
+	<column name="checkedout_on" not-null="true">
+		<type name="date"/>
+	</column>
+	<constraint name="checkouts_pk" type="pk-constr" table="core.checkouts">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="doctor_id" index="1"/>
+		<object name="patient_id" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="fk_checkouts_doctors" index="1"/>
+		<object name="fk_checkouts_patients" index="2"/>
+	</customidxs>
+</table>
+
+<relationship name="doctors_has_many_checkouts" type="rel1n"
+	 src-col-pattern="doctor_id"
+	 pk-pattern="pk_{dt}" uq-pattern="uk_{dt}"
+	 src-fk-pattern="fk_{dt}_{st}"
+	 src-table="core.doctors"
+	 dst-table="core.checkouts"
+	 src-required="true" dst-required="false"
+	upd-action="NO ACTION"
+	del-action="NO ACTION"/>
+
+<relationship name="patients_has_many_checkouts" type="rel1n"
+	 src-col-pattern="patient_id"
+	 pk-pattern="pk_{dt}" uq-pattern="uk_{dt}"
+	 src-fk-pattern="fk_{dt}_{st}"
+	 src-table="core.patients"
+	 dst-table="core.checkouts"
+	 src-required="true" dst-required="false"
+	upd-action="NO ACTION"
+	del-action="NO ACTION"/>
+
+<permission>
+	<object name="core" type="schema"/>
+	<roles names="hospital_web"/>
+	<privileges usage="true"/>
+</permission>
+</dbmodel>

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="items" />
+        <cc:attribute name="selected" />
+        <cc:attribute name="dialogHeader" />
+        <cc:attribute name="updates" />
+        <cc:attribute name="disableButtons" />
+        <cc:attribute name="rowsPerPage" default="10" />
+        <cc:attribute name="deleteMessage" default="Удалить запись?" />
+        <cc:attribute name="create" method-signature="void ()" />
+        <cc:attribute name="save" method-signature="void ()" />
+        <cc:attribute name="delete" method-signature="void ()" />
+        <cc:attribute name="cancel" method-signature="void ()" />
+        <cc:attribute name="refresh" method-signature="void ()" />
+        <cc:facet name="dialog" />
+        <cc:facet name="footer" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form id="tableForm">
+            <p:dataTable id="table" value="#{cc.attrs.items}" rowKey="#{item.id}" selection="#{cc.attrs.selected}" selectionMode="single" var="item" emptyMessage="Нет данных"
+                         rows="#{cc.attrs.rowsPerPage}" paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+
+                <cc:insertChildren />
+
+                <f:facet name="footer">
+                    <p:commandButton value="Добавить" icon="ui-icon-plus" actionListener="#{cc.attrs.create}" update="#{cc.id}:dlgForm" oncomplete="PF('#{cc.id}Dlg').show()" id="createButton" disabled="#{cc.attrs.disableButtons}" />
+                    <p:commandButton value="Редактировать" icon="ui-icon-pencil" update="#{cc.id}:dlgForm" process="#{cc.id}:dlgForm" oncomplete="PF('#{cc.id}Dlg').show()" id="editButton" disabled="#{empty cc.attrs.selected}" />
+                    <p:commandButton value="Удалить" icon="ui-icon-trash" actionListener="#{cc.attrs.delete}" update="#{cc.attrs.updates} @form" id="deleteButton" disabled="#{empty cc.attrs.selected}">
+                        <p:confirm message="#{cc.attrs.deleteMessage}" icon="ui-icon-alert" />
+                    </p:commandButton>                            
+                    <p:commandButton value="Обновить" icon="ui-icon-refresh" actionListener="#{cc.attrs.refresh}" update="#{cc.attrs.updates} @form" disabled="#{cc.attrs.disableButtons}" />
+
+                    <cc:renderFacet name="footer" />
+                </f:facet>
+
+                <p:ajax event="rowSelect" update="editButton deleteButton #{cc.attrs.updates}" />
+                <p:ajax event="rowUnselect" update="editButton deleteButton #{cc.attrs.updates}" />
+
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog id="#{cc.id}Dlg" widgetVar="#{cc.id}Dlg" modal="true" appendTo="@(body)" header="#{cc.attrs.dialogHeader}">
+            <h:form id="dlgForm">
+                <cc:renderFacet name="dialog" />
+
+                <h:panelGroup class="none" layout="block">
+                    <p:commandButton value="Сохранить" actionListener="#{cc.attrs.save}" update="#{cc.id}:tableForm:table @form" oncomplete="save(args, '#{cc.id}', '#{cc.id}Dlg')" icon="ui-icon-disk" />
+                    <p:commandButton value="Отменить" actionListener="#{cc.attrs.cancel}" update="#{cc.id}:tableForm:table" onclick="PF('#{cc.id}Dlg').hide()" immediate="true" icon="ui-icon-cancel" />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </cc:implementation>
+</html>
